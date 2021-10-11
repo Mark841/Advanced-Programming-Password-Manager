@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -31,7 +32,7 @@ void file_retriever(const string file_name)
 void file_writer(const string username, const string password, const string file_name)
 {
 	ofstream data_file;
-	data_file.open(file_name.c_str());
+	data_file.open(file_name.c_str(), data_file.out | data_file.app);
 
 	if (data_file.fail())
 		throw invalid_argument("no file exists " + file_name);
@@ -41,9 +42,28 @@ void file_writer(const string username, const string password, const string file
 	data_file.close();
 }
 
+int collatz_algorithm(int char_value)
+{
+	int steps_through = 0;
+	while (char_value != 1)
+	{
+		(char_value % 2 == 0) ? (char_value = char_value / 2) : (char_value = (3 * char_value + 1));
+		steps_through++;
+	}
+	return steps_through;
+}
+
 string password_encrypter(const string password)
 {
 	string encrypted_password = "";
+	int offset = 0;
+
+	for (char c : password)
+	{
+		int ASCII_value = int(c);
+		offset = collatz_algorithm(ASCII_value + offset);
+		encrypted_password += to_string(offset);
+	}
 	return encrypted_password;
 }
 
@@ -64,6 +84,7 @@ void create_username_and_password()
 			cin >> password;
 		}
 		password = password_encrypter(password);
+		cout << username << " " << password << endl;
 		file_writer(username, password, username_and_passwords_file);
 	}
 	catch (const invalid_argument& iae) {
