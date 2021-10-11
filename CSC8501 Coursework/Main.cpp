@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "FileManager.h"
 
 using namespace std;
 
@@ -17,29 +18,6 @@ int menu()
 	cout << "\t4. Analyse password strength analysis file" << endl;
 	cin >> choice;
 	return choice;
-}
-
-void file_retriever(const string file_name)
-{
-	ifstream data_file;
-	data_file.open(file_name.c_str());
-
-	if (data_file.fail())
-		throw invalid_argument("no file exists " + file_name);
-
-	data_file.close();
-}
-void file_writer(const string username, const string password, const string file_name)
-{
-	ofstream data_file;
-	data_file.open(file_name.c_str(), data_file.out | data_file.app);
-
-	if (data_file.fail())
-		throw invalid_argument("no file exists " + file_name);
-
-	data_file << username << " " << password << "\n";
-
-	data_file.close();
 }
 
 int collatz_algorithm(int char_value)
@@ -67,30 +45,19 @@ string password_encrypter(const string password)
 	return encrypted_password;
 }
 
-void create_username_and_password()
+void create_username_and_password(string* username, string* password)
 {
-	try 
+	while (*username == "" || username == nullptr)
 	{
-		string username = "";
-		string password = "";
-		while (username == "")
-		{
-			cout << "Please enter a username: " << endl;
-			cin >> username;
-		}
-		while (password == "")
-		{
-			cout << "Please enter a password: " << endl;
-			cin >> password;
-		}
-		password = password_encrypter(password);
-		cout << username << " " << password << endl;
-		file_writer(username, password, username_and_passwords_file);
+		cout << "Please enter a username: " << endl;
+		cin >> *username;
 	}
-	catch (const invalid_argument& iae) {
-		cout << "unable to read data: " << iae.what() << "\n";
-		exit(1);
+	while (*password == "" || password == nullptr)
+	{
+		cout << "Please enter a password: " << endl;
+		cin >> *password;
 	}
+	*password = password_encrypter(*password);
 }
 
 int main()
@@ -102,7 +69,26 @@ int main()
 
 	if (choice == 1)
 	{
-		create_username_and_password();
+		try
+		{
+			FileManager* file = new FileManager(username_and_passwords_file);
+			string* username = new string();
+			string* password = new string();
+			*username = "";
+			*password = "";
+
+			create_username_and_password(username, password);
+			file->add_to_file(*username, *password);
+
+			delete file;
+			delete username, password;
+			username, password = nullptr;
+			file = NULL;
+		}
+		catch (const invalid_argument& iae) {
+			cout << "unable to read data: " << iae.what() << "\n";
+			exit(1);
+		}
 	}
 	else if (choice == 2)
 	{
