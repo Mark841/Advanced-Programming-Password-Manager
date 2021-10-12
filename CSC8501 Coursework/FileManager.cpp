@@ -37,3 +37,15 @@ void FileManager::add_to_file(const string value1, const string value2)
 	data_file.seekg(0, ios::end);
 	data_file << value1 << " " << value2 << "\n";
 }
+
+void FileManager::store_users(BinarySearchTree* bst)
+{
+	string line;
+	data_file.clear();
+	data_file.seekg(0, ios::beg);
+
+	while (getline(data_file, line))
+	{
+		bst->insert_user(line.substr(0, line.find(' ')), line.substr(line.find(' ')+1));
+	}
+}
