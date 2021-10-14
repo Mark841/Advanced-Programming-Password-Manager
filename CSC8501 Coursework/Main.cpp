@@ -1,8 +1,12 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 #include "FileManager.h"
+#include "WriteToFile.h"
+#include "AppendToFile.h"
 #include "BinarySearchTree.h"
+#include "RandomPasswordGenerator.h"
 
 using namespace std;
 
@@ -26,8 +30,21 @@ string password_encrypter(const string password)
 
 	for (char c : password)
 	{
-		int ASCII_value = int(c);
-		offset = collatz_algorithm(ASCII_value + offset);
+		int ascii_value = int(c);
+		offset = collatz_algorithm(ascii_value + offset);
+		encrypted_password += to_string(offset);
+	}
+	return encrypted_password;
+
+}
+string password_encrypter(vector<int> password)
+{
+	string encrypted_password = "";
+	int offset = 0;
+
+	for (auto ascii_value : password)
+	{
+		offset = collatz_algorithm(ascii_value + offset);
 		encrypted_password += to_string(offset);
 	}
 	return encrypted_password;
@@ -64,7 +81,7 @@ void choice_1()
 {
 	try
 	{
-		FileManager* file = new FileManager(username_and_passwords_file);
+		AppendToFile* file = new AppendToFile(username_and_passwords_file);
 		string* username = new string();
 		string* password = new string();
 		*username = "";
@@ -87,7 +104,7 @@ void choice_2()
 {
 	try
 	{
-		FileManager* file = new FileManager(username_and_passwords_file);
+		AppendToFile* file = new AppendToFile(username_and_passwords_file);
 		BinarySearchTree* bst = new BinarySearchTree();
 		file->store_users(bst);
 
@@ -132,7 +149,30 @@ void choice_2()
 }
 void choice_3()
 {
+	try
+	{
+		WriteToFile* file = new WriteToFile(passwords_file);
+		RandomPasswordGenerator* rpg = new RandomPasswordGenerator();
 
+		string* restrictive_passwords = rpg->get_restrictive_passwords();
+		vector<vector<int>> non_restrictive_passwords = rpg->get_non_restrictive_passwords();
+
+		for (int i = 0; i < 10000; i++)
+		{
+			file->add_to_file(password_encrypter(restrictive_passwords[i]));
+		}
+		for (int i = 0; i < 10000; i++)
+		{
+			file->add_to_file(password_encrypter(non_restrictive_passwords[i]));
+		}
+
+		delete rpg;
+		rpg = NULL;
+	}
+	catch (const invalid_argument& iae) {
+		cout << "unable to read data: " << iae.what() << "\n";
+		exit(1);
+	}
 }
 void choice_4()
 {
@@ -143,6 +183,7 @@ int main()
 {
 	int choice = 0;
 	char restart = 'Y';
+	
 	while (toupper(restart) == 'Y')
 	{
 		while (choice < 1 || choice > 4) {

@@ -123,13 +123,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AppendToFile.cpp" />
     <ClCompile Include="BinarySearchTree.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="RandomPasswordGenerator.cpp" />
+    <ClCompile Include="WriteToFile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AppendToFile.h" />
     <ClInclude Include="BinarySearchTree.h" />
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="RandomPasswordGenerator.h" />
+    <ClInclude Include="WriteToFile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -6,17 +6,13 @@
 
 using namespace std;
 
-class FileManager
+class FileManager abstract
 {
 public:
-	FileManager(const string file_name);
+	FileManager(const string file_name, int opening_mode);
 	~FileManager();
+	virtual void add_to_file(const string value) = 0;
 
-	void read_from_file();
-	void add_to_file(const string value);
-	void add_to_file(const string value1, const string value2);
-	void store_users(BinarySearchTree* bst);
-
-private:
+protected:
 	fstream data_file;
 };
