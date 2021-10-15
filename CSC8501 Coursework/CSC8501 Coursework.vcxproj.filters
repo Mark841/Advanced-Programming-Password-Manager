@@ -33,6 +33,12 @@
     <ClCompile Include="AppendToFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PasswordDecrypter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PasswordEncrypter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileManager.h">
@@ -48,6 +54,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AppendToFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PasswordDecrypter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PasswordEncrypter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

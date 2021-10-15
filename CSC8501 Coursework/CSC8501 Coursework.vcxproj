@@ -127,6 +127,8 @@
     <ClCompile Include="BinarySearchTree.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="PasswordDecrypter.cpp" />
+    <ClCompile Include="PasswordEncrypter.cpp" />
     <ClCompile Include="RandomPasswordGenerator.cpp" />
     <ClCompile Include="WriteToFile.cpp" />
   </ItemGroup>
@@ -134,6 +136,8 @@
     <ClInclude Include="AppendToFile.h" />
     <ClInclude Include="BinarySearchTree.h" />
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="PasswordDecrypter.h" />
+    <ClInclude Include="PasswordEncrypter.h" />
     <ClInclude Include="RandomPasswordGenerator.h" />
     <ClInclude Include="WriteToFile.h" />
   </ItemGroup>

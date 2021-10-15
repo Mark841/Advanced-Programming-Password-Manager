@@ -7,48 +7,13 @@
 #include "AppendToFile.h"
 #include "BinarySearchTree.h"
 #include "RandomPasswordGenerator.h"
+#include "PasswordDecrypter.h"
+#include "PasswordEncrypter.h"
 
 using namespace std;
 
 const string username_and_passwords_file = "password.txt";
 const string passwords_file = "passwordtest.txt";
-
-int collatz_algorithm(int char_value)
-{
-	int steps_through = 0;
-	while (char_value != 1)
-	{
-		(char_value % 2 == 0) ? (char_value = char_value / 2) : (char_value = (3 * char_value + 1));
-		steps_through++;
-	}
-	return steps_through;
-}
-string password_encrypter(const string password)
-{
-	string encrypted_password = "";
-	int offset = 0;
-
-	for (char c : password)
-	{
-		int ascii_value = int(c);
-		offset = collatz_algorithm(ascii_value + offset);
-		encrypted_password += to_string(offset);
-	}
-	return encrypted_password;
-
-}
-string password_encrypter(vector<int> password)
-{
-	string encrypted_password = "";
-	int offset = 0;
-
-	for (auto ascii_value : password)
-	{
-		offset = collatz_algorithm(ascii_value + offset);
-		encrypted_password += to_string(offset);
-	}
-	return encrypted_password;
-}
 
 void validate_username_and_password(string* username, string* password)
 {
@@ -88,7 +53,7 @@ void choice_1()
 		*password = "";
 
 		validate_username_and_password(username, password);
-		*password = password_encrypter(*password);
+		*password = PasswordEncrypter::password_encrypter(*password);
 		file->add_to_file(*username, *password);
 
 		delete file, username, password;
@@ -106,7 +71,7 @@ void choice_2()
 	{
 		AppendToFile* file = new AppendToFile(username_and_passwords_file);
 		BinarySearchTree* bst = new BinarySearchTree();
-		file->store_users(bst);
+		file->store_users_in_tree(bst);
 
 		string username = "";
 		cout << "Please enter a username: ";
@@ -122,7 +87,7 @@ void choice_2()
 			{
 				cout << "Please enter your password (" << password_attempts << " guesses left): ";
 				cin >> password;
-				if (bst->get_user_password(username) == password_encrypter(password))
+				if (bst->get_user_password(username) == PasswordEncrypter::password_encrypter(password))
 				{
 					cout << "success!" << endl;
 					password_correct = true;
@@ -159,12 +124,15 @@ void choice_3()
 
 		for (int i = 0; i < 10000; i++)
 		{
-			file->add_to_file(password_encrypter(restrictive_passwords[i]));
+			file->add_to_file(PasswordEncrypter::password_encrypter(restrictive_passwords[i]));
 		}
 		for (int i = 0; i < 10000; i++)
 		{
-			file->add_to_file(password_encrypter(non_restrictive_passwords[i]));
+			file->add_to_file(PasswordEncrypter::password_encrypter(non_restrictive_passwords[i]));
 		}
+		// TODO: 9999 not being saved to file but only on non restrictive passwords for some reason
+		cout << PasswordEncrypter::password_encrypter(non_restrictive_passwords[9998]) << endl;
+		cout << PasswordEncrypter::password_encrypter(non_restrictive_passwords[9999]) << endl;
 
 		delete rpg;
 		rpg = NULL;
@@ -176,14 +144,39 @@ void choice_3()
 }
 void choice_4()
 {
+	try
+	{
+		AppendToFile* file = new AppendToFile(passwords_file);
+		vector<string> passwords = file->get_values();
 
+		cout << "20953985" << endl;
+		PasswordDecrypter* decrypted = new PasswordDecrypter("20953985");
+		decrypted->output_possible_combinations();
+		delete decrypted;
+		/*PasswordDecrypter* decryption_attempt[20000];
+		for (int i = 0; i < passwords.size(); i++)
+		{
+			decryption_attempt[i] = new PasswordDecrypter(passwords[i]);
+		}
+
+		for (int i = 0; i < passwords.size(); i++)
+		{
+			delete decryption_attempt[i];
+		}*/
+		delete file;
+		file = NULL;
+	}
+	catch (const invalid_argument& iae) {
+		cout << "unable to read data: " << iae.what() << "\n";
+		exit(1);
+	}
 }
 
 int main()
 {
 	int choice = 0;
 	char restart = 'Y';
-	
+		
 	while (toupper(restart) == 'Y')
 	{
 		while (choice < 1 || choice > 4) {

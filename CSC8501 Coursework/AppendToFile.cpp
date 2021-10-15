@@ -19,6 +19,21 @@ void AppendToFile::read_from_file()
 		cout << next_line << endl;
 	}
 }
+vector<string> AppendToFile::get_values()
+{
+	vector<string> values;
+	string next_line;
+
+	data_file.clear();
+	data_file.seekg(0, ios::beg);
+
+	int count = 0;
+	while (getline(data_file, next_line))
+	{
+		values.push_back(next_line);
+	}
+	return values;
+}
 
 void AppendToFile::add_to_file(const string value)
 {
@@ -33,7 +48,7 @@ void AppendToFile::add_to_file(const string value1, const string value2)
 	data_file << value1 << " " << value2 << "\n";
 }
 
-void AppendToFile::store_users(BinarySearchTree* bst)
+void AppendToFile::store_users_in_tree(BinarySearchTree* bst)
 {
 	string line;
 	data_file.clear();
