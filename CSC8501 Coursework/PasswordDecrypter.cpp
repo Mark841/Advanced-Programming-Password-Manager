@@ -2,30 +2,31 @@
 
 PasswordDecrypter::PasswordDecrypter(string password) : encrypted_password(password)
 {
-	vector<int> pass;
-	decrypter(0, 0, pass);
+	words = new vector<vector<int>>;
 }
 
 PasswordDecrypter::~PasswordDecrypter()
 {
+	delete words;
+	words = NULL;
 }
 
-void PasswordDecrypter::decrypter(int end_of_prev_visited_character, int offset, vector<int> password)
+void PasswordDecrypter::single_combination_decrypter()
 {
-
-	// for all ascii values, if that ascii collatz'd is the first, first two or first three characters of string then that letter is a valid one
-	// then use that first, first two or first three characters as the offset for the next
+	vector<int> pass;
+	single_combination_decrypter(0, 0, pass);
+}
+void PasswordDecrypter::single_combination_decrypter(int end_of_prev_visited_character, int offset, vector<int> password)
+{
 	for (int i = 1; i <= 3; i++)
 	{
 		int end_of_next_char = end_of_prev_visited_character + i;
 		int substring;
 
-		// if the substring would be longer than the rest of the string (out of bounds)
 		if (end_of_next_char > encrypted_password.length())
 		{
 			if (PasswordEncrypter::password_encrypter(password) == encrypted_password)
 			{
-				//output_vector(password);
 				possible_combinations.push_back(password);
 			}
 			return;
@@ -35,18 +36,217 @@ void PasswordDecrypter::decrypter(int end_of_prev_visited_character, int offset,
 			substring = stoi(encrypted_password.substr(end_of_prev_visited_character, i));
 		}
 
-		//cout << substring << endl;
-		for (int j = 1; j < 256; j++)
-		//for (int j = 65; j < 123; j++)
+		for (int j = 65; j < 123; j++)
 		{
-			// if letter is found
 			if (PasswordEncrypter::collatz_algorithm(j + offset) == substring)
 			{
-				// go to next letter
-				//cout << substring << " , " << char(j) << endl;
-				//cout << char(j);
 				password.push_back(j);
-				decrypter(end_of_next_char, substring, password);
+				single_combination_decrypter(end_of_next_char, substring, password);
+				password.pop_back();
+			}
+			if (possible_combinations.size() > 0)
+			{
+				return;
+			}
+		}
+	}
+}
+void PasswordDecrypter::single_extended_combination_decrypter()
+{
+	vector<int> pass;
+	single_extended_combination_decrypter(0, 0, pass);
+}
+void PasswordDecrypter::single_extended_combination_decrypter(int end_of_prev_visited_character, int offset, vector<int> password)
+{
+	for (int i = 1; i <= 3; i++)
+	{
+		int end_of_next_char = end_of_prev_visited_character + i;
+		int substring;
+
+		if (end_of_next_char > encrypted_password.length())
+		{
+			if (PasswordEncrypter::password_encrypter(password) == encrypted_password)
+			{
+				possible_combinations.push_back(password);
+			}
+			return;
+		}
+		else 
+		{
+			substring = stoi(encrypted_password.substr(end_of_prev_visited_character, i));
+		}
+
+		for (int j = 1; j < 256; j++)
+		{
+			if (PasswordEncrypter::collatz_algorithm(j + offset) == substring)
+			{
+				password.push_back(j);
+				single_extended_combination_decrypter(end_of_next_char, substring, password);
+				password.pop_back();
+			}
+			if (possible_combinations.size() > 0)
+			{
+				return;
+			}
+		}
+	}
+}
+
+void PasswordDecrypter::all_combinations_decrypter()
+{
+	vector<int> pass;
+	all_combinations_decrypter(0, 0, pass);
+}
+void PasswordDecrypter::all_combinations_decrypter(int end_of_prev_visited_character, int offset, vector<int> password)
+{
+	for (int i = 1; i <= 3; i++)
+	{
+		int end_of_next_char = end_of_prev_visited_character + i;
+		int substring;
+
+		if (end_of_next_char > encrypted_password.length())
+		{
+			if (PasswordEncrypter::password_encrypter(password) == encrypted_password)
+			{
+				possible_combinations.push_back(password);
+			}
+			return;
+		}
+		else 
+		{
+			substring = stoi(encrypted_password.substr(end_of_prev_visited_character, i));
+		}
+
+		for (int j = 1; j < 256; j++)
+		{
+			if (PasswordEncrypter::collatz_algorithm(j + offset) == substring)
+			{
+				password.push_back(j);
+				all_combinations_decrypter(end_of_next_char, substring, password);
+				password.pop_back();
+			}
+		}
+	}
+}
+
+void PasswordDecrypter::sentence_decrypter()
+{
+	vector<int> pass;
+	sentence_decrypter(0, 0, pass);
+}
+void PasswordDecrypter::sentence_decrypter(int end_of_prev_visited_character, int offset, vector<int> password)
+{
+	for (int i = 1; i <= 3; i++)
+	{
+		int end_of_next_char = end_of_prev_visited_character + i;
+		int substring;
+
+		if (end_of_next_char > encrypted_password.length())
+		{
+			if (PasswordEncrypter::password_encrypter(password) == encrypted_password)
+			{
+				output_vector(password);
+			}
+			return;
+		}
+		else 
+		{
+			substring = stoi(encrypted_password.substr(end_of_prev_visited_character, i));
+		}
+		if (PasswordEncrypter::collatz_algorithm(32 + offset) == substring)
+		{
+			password.push_back(32);
+			sentence_decrypter(end_of_next_char, substring, password);
+			password.pop_back();
+		}
+		for (int j = 65; j < 91; j++)
+		{
+			if (PasswordEncrypter::collatz_algorithm(j + offset) == substring)
+			{
+				password.push_back(j);
+				sentence_decrypter(end_of_next_char, substring, password);
+				password.pop_back();
+			}
+		}
+		for (int j = 97; j < 123; j++)
+		{
+			if (PasswordEncrypter::collatz_algorithm(j + offset) == substring)
+			{
+				password.push_back(j);
+				sentence_decrypter(end_of_next_char, substring, password);
+				password.pop_back();
+			}
+		}
+	}
+}
+void PasswordDecrypter::fast_sentence_decrypter()
+{
+	vector<int> pass, word;
+	cout << "Below are all unique words possible in the sentence, note some could be repeated more than once in the string" << endl;
+	fast_sentence_decrypter(0, 0, pass, words, word);
+	cout << "Above are all unique words possible in the sentence, note some could be repeated more than once in the string" << endl;
+}
+void PasswordDecrypter::fast_sentence_decrypter(int end_of_prev_visited_character, int offset, vector<int> password, vector<vector<int>>* words, vector<int> word)
+{
+	if (words != NULL)
+	{
+		auto iterator = find(words->begin(), words->end(), word);
+		if (iterator != words->end() && encrypted_password.length() < end_of_prev_visited_character+1)
+			return;
+		else if (iterator != words->end() && 
+			(PasswordEncrypter::collatz_algorithm(32 + offset) == stoi(encrypted_password.substr(end_of_prev_visited_character, 1)) || 
+				PasswordEncrypter::collatz_algorithm(32 + offset) == stoi(encrypted_password.substr(end_of_prev_visited_character, 2)) ||
+				PasswordEncrypter::collatz_algorithm(32 + offset) == stoi(encrypted_password.substr(end_of_prev_visited_character, 3))
+				))
+			return;
+	}
+	for (int i = 1; i <= 3; i++)
+	{
+		int end_of_next_char = end_of_prev_visited_character + i;
+		int substring;
+
+		if (end_of_next_char > encrypted_password.length())
+		{
+			if (PasswordEncrypter::password_encrypter(password) == encrypted_password)
+			{
+				words->push_back(word);
+				word.clear();
+				output_vector(password);
+			}
+			return;
+		}
+		else
+		{
+			substring = stoi(encrypted_password.substr(end_of_prev_visited_character, i));
+		}
+		if (PasswordEncrypter::collatz_algorithm(32 + offset) == substring)
+		{
+			password.push_back(32);
+			words->push_back(word);
+			word.clear();
+			fast_sentence_decrypter(end_of_next_char, substring, password, words, word);
+			password.pop_back();
+			output_vector(password);
+		}
+		for (int j = 65; j < 91; j++)
+		{
+			if (PasswordEncrypter::collatz_algorithm(j + offset) == substring)
+			{
+				password.push_back(j);
+				word.push_back(j);
+				fast_sentence_decrypter(end_of_next_char, substring, password, words, word);
+				word.pop_back();
+				password.pop_back();
+			}
+		}
+		for (int j = 97; j < 123; j++)
+		{
+			if (PasswordEncrypter::collatz_algorithm(j + offset) == substring)
+			{
+				password.push_back(j);
+				word.push_back(j);
+				fast_sentence_decrypter(end_of_next_char, substring, password, words, word);
+				word.pop_back();
 				password.pop_back();
 			}
 		}
