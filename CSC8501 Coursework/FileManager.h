@@ -2,7 +2,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "BinarySearchTree.h"
+#include "BinarySearchTreeUsers.h"
+#include "BinarySearchTreeWords.h"
 
 using namespace std;
 

@@ -1,44 +1,44 @@
-#include "BinarySearchTree.h"
+#include "BinarySearchTreeUsers.h"
 
 
-BinarySearchTree::BinarySearchTree()
+BinarySearchTreeUsers::BinarySearchTreeUsers()
 {
 	root = NULL;
 }
-BinarySearchTree::~BinarySearchTree()
+BinarySearchTreeUsers::~BinarySearchTreeUsers()
 {
 	terminate_tree();
 	root = NULL;
 }
 
-void BinarySearchTree::insert_user(const string username, const string password)
+void BinarySearchTreeUsers::insert_user(const string username, const string password)
 {
 	insert_user_recursive(&root, username, password);
 }
-void BinarySearchTree::print_tree()
+void BinarySearchTreeUsers::print_tree()
 {
 	print_tree_recursive(root);
 }
-void BinarySearchTree::terminate_tree()
+void BinarySearchTreeUsers::terminate_tree()
 {
 	terminate_tree_recursive(root);
 }
-bool BinarySearchTree::search_for_user(const string username)
+bool BinarySearchTreeUsers::search_for_user(const string username)
 {
 	return search_for_user_recursive(&root, username);
 }
-string BinarySearchTree::get_user_password(const string username)
+string BinarySearchTreeUsers::get_user_password(const string username)
 {
 	return get_user_password_recursive(&root, username);
 }
 
 
-void BinarySearchTree::insert_user_recursive(struct node** tree, const string username, const string password)
+void BinarySearchTreeUsers::insert_user_recursive(struct user_node** tree, const string username, const string password)
 {
 	if (!tree) return;
 	if (!(*tree))
 	{
-		*tree = new node;
+		*tree = new user_node;
 		(*tree)->username = username;
 		(*tree)->password = password;
 		(*tree)->left = nullptr;
@@ -53,7 +53,7 @@ void BinarySearchTree::insert_user_recursive(struct node** tree, const string us
 		insert_user_recursive(&(*tree)->right, username, password);
 	}
 }
-void BinarySearchTree::print_tree_recursive(struct node* tree)
+void BinarySearchTreeUsers::print_tree_recursive(struct user_node* tree)
 {
 	if (tree)
 	{
@@ -62,7 +62,7 @@ void BinarySearchTree::print_tree_recursive(struct node* tree)
 		print_tree_recursive(tree->right);
 	}
 }
-void BinarySearchTree::terminate_tree_recursive(struct node* tree)
+void BinarySearchTreeUsers::terminate_tree_recursive(struct user_node* tree)
 {
 	if (tree)
 	{
@@ -71,7 +71,7 @@ void BinarySearchTree::terminate_tree_recursive(struct node* tree)
 		delete tree;
 	}
 }
-bool BinarySearchTree::search_for_user_recursive(struct node** tree, const string username)
+bool BinarySearchTreeUsers::search_for_user_recursive(struct user_node** tree, const string username)
 {
 	if (*tree != NULL)
 	{
@@ -93,7 +93,7 @@ bool BinarySearchTree::search_for_user_recursive(struct node** tree, const strin
 		return false;
 	}
 }
-string BinarySearchTree::get_user_password_recursive(node** tree, const string username)
+string BinarySearchTreeUsers::get_user_password_recursive(user_node** tree, const string username)
 {
 	if (*tree != NULL)
 	{

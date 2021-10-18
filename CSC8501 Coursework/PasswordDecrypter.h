@@ -27,6 +27,7 @@ public:
 	void fast_sentence_decrypter(int end_of_prev_visited_character, int offset, vector<int> password, vector<vector<int>>* words, vector<int> word);
 
 	vector<vector<int>> get_all_words() { return *words; }
+	vector<string> get_rough_sentence_words();
 	void output_possible_combinations();
 	void output_vector(vector<int> password);
 

@@ -5,7 +5,7 @@
 #include "FileManager.h"
 #include "WriteToFile.h"
 #include "AppendToFile.h"
-#include "BinarySearchTree.h"
+#include "BinarySearchTreeUsers.h"
 #include "RandomPasswordGenerator.h"
 #include "PasswordDecrypter.h"
 #include "PasswordEncrypter.h"
@@ -28,6 +28,40 @@ void validate_username_and_password(string* username, string* password)
 	{
 		cout << "Please enter a password: " << endl;
 		cin >> *password;
+	}
+}
+bool binary_search_words(vector<string> dictionary_words, string word)
+{
+	int left = 0;
+	int right = dictionary_words.size();
+
+	while (left <= right)
+	{
+		int mid = (left + right) / 2;
+		if (dictionary_words[mid] == word)
+			return true;
+		else if (word < dictionary_words[mid])
+			right = mid - 1;
+		else
+			left = mid + 1;
+	}
+	return false;
+}
+
+void output_sentence(vector<vector<string>> words, int index, string sentence)
+{
+	if (index == words.size())
+	{
+		cout << sentence << endl;
+	}
+	else
+	{
+		for (int i = 0; i < words[index].size(); i++)
+		{
+			sentence += words[index][i] + " ";
+			output_sentence(words, index+1, sentence);
+			sentence = sentence.substr(0, (sentence.length() - (words[index][i].length() + 1)));
+		}
 	}
 }
 
@@ -72,7 +106,7 @@ void choice_2()
 	try
 	{
 		AppendToFile* file = new AppendToFile(username_and_passwords_file);
-		BinarySearchTree* bst = new BinarySearchTree();
+		BinarySearchTreeUsers* bst = new BinarySearchTreeUsers();
 		file->store_users_in_tree(bst);
 
 		string username = "";
@@ -191,13 +225,14 @@ void choice_5()
 		AppendToFile* file = new AppendToFile(english_words);
 		vector<string> dictionary_words = file->get_values();
 
-		cout << "27322810313331033910211452912207344136146925461033281533271031012815108114101" << endl;
+		cout << "Decrypting: 27322810313331033910211452912207344136146925461033281533271031012815108114101" << endl;
 		PasswordDecrypter* decrypted = new PasswordDecrypter("27322810313331033910211452912207344136146925461033281533271031012815108114101");
-		decrypted->fast_sentence_decrypter();
+		decrypted->single_combination_decrypter();
+		decrypted->output_possible_combinations();
 
+		decrypted->fast_sentence_decrypter();
 		vector<vector<int>> all_possible_words = decrypted->get_all_words();
 		vector<string> valid_words;
-
 		for (auto word : all_possible_words)
 		{
 			string valid_word = "";
@@ -205,16 +240,43 @@ void choice_5()
 			{
 				valid_word += char(word[i]);
 			}
+
 			auto iterator = find(dictionary_words.begin(), dictionary_words.end(), valid_word);
 			if (iterator != dictionary_words.end())
+			{
 				valid_words.push_back(valid_word);
+			}
 			valid_word = "";
 		}
 		for (auto word : valid_words)
 		{
 			cout << word << endl;
 		}
+
+		cout << endl;
+		vector<string> sentence = decrypted->get_rough_sentence_words();
+		vector<vector<string>> words_in_right_slots;
+		for (auto word : sentence)
+		{
+			vector<string> word_slots;
+			for (auto valid_word : valid_words)
+			{
+				if (valid_word.length() == word.length())
+				{
+					cout << valid_word + " ";
+					word_slots.push_back(valid_word);
+				}
+			}
+			words_in_right_slots.push_back(word_slots);
+			word_slots.clear();
+			cout << endl;
+		}
+
+		output_sentence(words_in_right_slots, 0, "");
+
 		delete decrypted;
+		delete file;
+		file = NULL;
 	}
 	catch (const invalid_argument& iae) {
 		cout << "unable to read data: " << iae.what() << "\n";
