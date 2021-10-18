@@ -228,9 +228,9 @@ void choice_5()
 		cout << "Decrypting: 27322810313331033910211452912207344136146925461033281533271031012815108114101" << endl;
 		PasswordDecrypter* decrypted = new PasswordDecrypter("27322810313331033910211452912207344136146925461033281533271031012815108114101");
 		decrypted->single_combination_decrypter();
-		decrypted->output_possible_combinations();
-
 		decrypted->fast_sentence_decrypter();
+
+		cout << "Getting valid English words from decrypted words" << endl;
 		vector<vector<int>> all_possible_words = decrypted->get_all_words();
 		vector<string> valid_words;
 		for (auto word : all_possible_words)
@@ -248,12 +248,8 @@ void choice_5()
 			}
 			valid_word = "";
 		}
-		for (auto word : valid_words)
-		{
-			cout << word << endl;
-		}
 
-		cout << endl;
+		cout << "Getting all possible sentence variations" << endl;
 		vector<string> sentence = decrypted->get_rough_sentence_words();
 		vector<vector<string>> words_in_right_slots;
 		for (auto word : sentence)
@@ -263,13 +259,11 @@ void choice_5()
 			{
 				if (valid_word.length() == word.length())
 				{
-					cout << valid_word + " ";
 					word_slots.push_back(valid_word);
 				}
 			}
 			words_in_right_slots.push_back(word_slots);
 			word_slots.clear();
-			cout << endl;
 		}
 
 		output_sentence(words_in_right_slots, 0, "");
