@@ -27,14 +27,14 @@ void PasswordDecrypter::single_combination_decrypter(int end_of_prev_visited_cha
 		if (end_of_next_char > encrypted_password.length())
 		{
 			if (PasswordEncrypter::password_encrypter(password) == encrypted_password)
-			{
 				possible_combinations.push_back(password);
-			}
 			return;
 		}
 		else 
 		{
 			substring = stoi(encrypted_password.substr(end_of_prev_visited_character, i));
+			if (substring == 0)
+				return;
 		}
 
 		if (PasswordEncrypter::collatz_algorithm(32 + offset) == substring)
@@ -43,7 +43,7 @@ void PasswordDecrypter::single_combination_decrypter(int end_of_prev_visited_cha
 			single_combination_decrypter(end_of_next_char, substring, password);
 			password.pop_back();
 		}
-		for (int j = 65; j < 123; j++)
+		for (int j = 65; j < 91; j++)
 		{
 			if (PasswordEncrypter::collatz_algorithm(j + offset) == substring)
 			{
@@ -52,9 +52,18 @@ void PasswordDecrypter::single_combination_decrypter(int end_of_prev_visited_cha
 				password.pop_back();
 			}
 			if (possible_combinations.size() > 0)
-			{
 				return;
+		}
+		for (int j = 97; j < 123; j++)
+		{
+			if (PasswordEncrypter::collatz_algorithm(j + offset) == substring)
+			{
+				password.push_back(j);
+				single_combination_decrypter(end_of_next_char, substring, password);
+				password.pop_back();
 			}
+			if (possible_combinations.size() > 0)
+				return;
 		}
 	}
 }
@@ -73,14 +82,14 @@ void PasswordDecrypter::single_extended_combination_decrypter(int end_of_prev_vi
 		if (end_of_next_char > encrypted_password.length())
 		{
 			if (PasswordEncrypter::password_encrypter(password) == encrypted_password)
-			{
 				possible_combinations.push_back(password);
-			}
 			return;
 		}
 		else 
 		{
 			substring = stoi(encrypted_password.substr(end_of_prev_visited_character, i));
+			if (substring == 0)
+				return;
 		}
 
 		for (int j = 1; j < 256; j++)
@@ -92,9 +101,129 @@ void PasswordDecrypter::single_extended_combination_decrypter(int end_of_prev_vi
 				password.pop_back();
 			}
 			if (possible_combinations.size() > 0)
-			{
 				return;
+		}
+	}
+}
+
+void PasswordDecrypter::single_combination_decrypter(std::chrono::time_point<std::chrono::steady_clock> start_time, long float time_before_failure_in_seconds)
+{
+	vector<int> pass;
+	single_combination_decrypter(start_time, time_before_failure_in_seconds, 0, 0, pass);
+}
+void PasswordDecrypter::single_combination_decrypter(std::chrono::time_point<std::chrono::steady_clock> start_time, long float time_before_failure_in_seconds, int end_of_prev_visited_character, int offset, vector<int> password)
+{
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(stop - start_time).count();
+	if (duration > time_before_failure_in_seconds)
+		return;
+
+	for (int i = 1; i <= 3; i++)
+	{
+		int end_of_next_char = end_of_prev_visited_character + i;
+		int substring;
+
+		if (end_of_next_char > encrypted_password.length())
+		{
+			if (PasswordEncrypter::password_encrypter(password) == encrypted_password)
+				possible_combinations.push_back(password);
+			return;
+		}
+		else 
+		{
+			substring = stoi(encrypted_password.substr(end_of_prev_visited_character, i));
+			if (substring == 0)
+				return;
+		}
+
+		if (PasswordEncrypter::collatz_algorithm(32 + offset) == substring)
+		{
+			password.push_back(32);
+			single_combination_decrypter(start_time, time_before_failure_in_seconds, end_of_next_char, substring, password);
+			password.pop_back();
+		}
+		for (int j = 65; j < 91; j++)
+		{
+			if (PasswordEncrypter::collatz_algorithm(j + offset) == substring)
+			{
+				password.push_back(j);
+				single_combination_decrypter(start_time, time_before_failure_in_seconds, end_of_next_char, substring, password);
+				password.pop_back();
 			}
+
+			auto stop = high_resolution_clock::now();
+			auto duration = duration_cast<microseconds>(stop - start_time).count();
+			if (duration > time_before_failure_in_seconds)
+				return;
+
+			if (possible_combinations.size() > 0)
+				return;
+		}
+		for (int j = 97; j < 123; j++)
+		{
+			if (PasswordEncrypter::collatz_algorithm(j + offset) == substring)
+			{
+				password.push_back(j);
+				single_combination_decrypter(start_time, time_before_failure_in_seconds, end_of_next_char, substring, password);
+				password.pop_back();
+			}
+
+			auto stop = high_resolution_clock::now();
+			auto duration = duration_cast<microseconds>(stop - start_time).count();
+			if (duration > time_before_failure_in_seconds)
+				return;
+
+			if (possible_combinations.size() > 0)
+				return;
+		}
+	}
+}
+void PasswordDecrypter::single_extended_combination_decrypter(std::chrono::time_point<std::chrono::steady_clock> start_time, long float time_before_failure_in_seconds)
+{
+	vector<int> pass;
+	single_extended_combination_decrypter(start_time, time_before_failure_in_seconds, 0, 0, pass);
+}
+void PasswordDecrypter::single_extended_combination_decrypter(std::chrono::time_point<std::chrono::steady_clock> start_time, long float time_before_failure_in_seconds, int end_of_prev_visited_character, int offset, vector<int> password)
+{
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(stop - start_time).count();
+	if (duration > time_before_failure_in_seconds)
+		return;
+
+	for (int i = 1; i <= 3; i++)
+	{
+		int end_of_next_char = end_of_prev_visited_character + i;
+		int substring;
+
+		if (end_of_next_char > encrypted_password.length())
+		{
+			if (PasswordEncrypter::password_encrypter(password) == encrypted_password)
+				possible_combinations.push_back(password);
+			return;
+		}
+		else 
+		{
+			substring = stoi(encrypted_password.substr(end_of_prev_visited_character, i));
+			if (substring == 0)
+				return;
+		}
+
+		for (int j = 1; j < 256; j++)
+		{
+			if (PasswordEncrypter::collatz_algorithm(j + offset) == substring)
+			{
+				password.push_back(j);
+				single_extended_combination_decrypter(start_time, time_before_failure_in_seconds, end_of_next_char, substring, password);
+				password.pop_back();
+			}
+
+			auto stop = high_resolution_clock::now();
+			auto duration = duration_cast<microseconds>(stop - start_time).count();
+			if (duration > time_before_failure_in_seconds)
+				return;
+
+			if (possible_combinations.size() > 0)
+				return;
 		}
 	}
 }
@@ -122,6 +251,8 @@ void PasswordDecrypter::all_combinations_decrypter(int end_of_prev_visited_chara
 		else 
 		{
 			substring = stoi(encrypted_password.substr(end_of_prev_visited_character, i));
+			if (substring == 0)
+				return;
 		}
 
 		for (int j = 1; j < 256; j++)
@@ -159,6 +290,8 @@ void PasswordDecrypter::sentence_decrypter(int end_of_prev_visited_character, in
 		else 
 		{
 			substring = stoi(encrypted_password.substr(end_of_prev_visited_character, i));
+			if (substring == 0)
+				return;
 		}
 		if (PasswordEncrypter::collatz_algorithm(32 + offset) == substring)
 		{
@@ -225,6 +358,8 @@ void PasswordDecrypter::fast_sentence_decrypter(int end_of_prev_visited_characte
 		else
 		{
 			substring = stoi(encrypted_password.substr(end_of_prev_visited_character, i));
+			if (substring == 0)
+				return;
 		}
 		if (PasswordEncrypter::collatz_algorithm(32 + offset) == substring)
 		{

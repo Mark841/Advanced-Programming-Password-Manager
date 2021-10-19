@@ -1,11 +1,12 @@
 #include "PasswordEncrypter.h"
+#include <iostream>
 
 int PasswordEncrypter::collatz_algorithm(int char_value)
 {
 	int steps_through = 0;
 	while (char_value != 1)
 	{
-		(char_value % 2 == 0) ? (char_value = char_value / 2) : (char_value = (3 * char_value + 1));
+		(char_value % 2 == 0) ? (char_value = char_value / 2) : (char_value = ((3 * char_value) + 1));
 		steps_through++;
 	}
 	return steps_through;
@@ -20,6 +21,7 @@ string PasswordEncrypter::password_encrypter(const string password)
 	{
 		int ascii_value = int(c);
 		offset = PasswordEncrypter::collatz_algorithm(ascii_value + offset);
+		std::cout << c << "," << offset << endl;
 		encrypted_password += to_string(offset);
 	}
 	return encrypted_password;
