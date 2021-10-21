@@ -14,13 +14,13 @@ public:
 	PasswordDecrypter(string password);
 	~PasswordDecrypter();
 
-	void single_combination_decrypter();
-	void single_combination_decrypter(int end_of_prev_visited_character, int offset, vector<int> password);
+	void single_restricted_combination_decrypter();
+	void single_restricted_combination_decrypter(int end_of_prev_visited_character, int offset, vector<int> password);
 	void single_extended_combination_decrypter();
 	void single_extended_combination_decrypter(int end_of_prev_visited_character, int offset, vector<int> password);
 
-	void single_combination_decrypter(std::chrono::time_point<std::chrono::steady_clock> start_time, long float time_before_failure_in_seconds);
-	void single_combination_decrypter(std::chrono::time_point<std::chrono::steady_clock> start_time, long float time_before_failure_in_seconds, int end_of_prev_visited_character, int offset, vector<int> password);
+	void single_restricted_combination_decrypter(std::chrono::time_point<std::chrono::steady_clock> start_time, long float time_before_failure_in_seconds);
+	void single_restricted_combination_decrypter(std::chrono::time_point<std::chrono::steady_clock> start_time, long float time_before_failure_in_seconds, int end_of_prev_visited_character, int offset, vector<int> password);
 	void single_extended_combination_decrypter(std::chrono::time_point<std::chrono::steady_clock> start_time, long float time_before_failure_in_seconds);
 	void single_extended_combination_decrypter(std::chrono::time_point<std::chrono::steady_clock> start_time, long float time_before_failure_in_seconds, int end_of_prev_visited_character, int offset, vector<int> password);
 	

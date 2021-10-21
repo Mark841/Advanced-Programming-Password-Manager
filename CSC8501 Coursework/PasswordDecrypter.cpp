@@ -11,21 +11,12 @@ PasswordDecrypter::~PasswordDecrypter()
 	words = NULL;
 }
 
-/* TODO:
-I have this line in all my decrypt methods:
-
-			if (substring == 0)
-				return;
-
-But the ASCII value 1 will give a value of 0 steps from the collatz algorithm so this is actually a vlaid character
-*/
-
-void PasswordDecrypter::single_combination_decrypter()
+void PasswordDecrypter::single_restricted_combination_decrypter()
 {
 	vector<int> pass;
-	single_combination_decrypter(0, 0, pass);
+	single_restricted_combination_decrypter(0, 0, pass);
 }
-void PasswordDecrypter::single_combination_decrypter(int end_of_prev_visited_character, int offset, vector<int> password)
+void PasswordDecrypter::single_restricted_combination_decrypter(int end_of_prev_visited_character, int offset, vector<int> password)
 {
 	for (int i = 1; i <= 3; i++)
 	{
@@ -48,7 +39,7 @@ void PasswordDecrypter::single_combination_decrypter(int end_of_prev_visited_cha
 		if (PasswordEncrypter::collatz_algorithm(32 + offset) == substring)
 		{
 			password.push_back(32);
-			single_combination_decrypter(end_of_next_char, substring, password);
+			single_restricted_combination_decrypter(end_of_next_char, substring, password);
 			password.pop_back();
 		}
 		for (int j = 65; j < 91; j++)
@@ -56,7 +47,7 @@ void PasswordDecrypter::single_combination_decrypter(int end_of_prev_visited_cha
 			if (PasswordEncrypter::collatz_algorithm(j + offset) == substring)
 			{
 				password.push_back(j);
-				single_combination_decrypter(end_of_next_char, substring, password);
+				single_restricted_combination_decrypter(end_of_next_char, substring, password);
 				password.pop_back();
 			}
 			if (possible_combinations.size() > 0)
@@ -67,7 +58,7 @@ void PasswordDecrypter::single_combination_decrypter(int end_of_prev_visited_cha
 			if (PasswordEncrypter::collatz_algorithm(j + offset) == substring)
 			{
 				password.push_back(j);
-				single_combination_decrypter(end_of_next_char, substring, password);
+				single_restricted_combination_decrypter(end_of_next_char, substring, password);
 				password.pop_back();
 			}
 			if (possible_combinations.size() > 0)
@@ -96,7 +87,7 @@ void PasswordDecrypter::single_extended_combination_decrypter(int end_of_prev_vi
 		else 
 		{
 			substring = stoi(encrypted_password.substr(end_of_prev_visited_character, i));
-			if (substring == 0)
+			if (substring == 0 && end_of_prev_visited_character != 0)
 				return;
 		}
 
@@ -114,12 +105,12 @@ void PasswordDecrypter::single_extended_combination_decrypter(int end_of_prev_vi
 	}
 }
 
-void PasswordDecrypter::single_combination_decrypter(std::chrono::time_point<std::chrono::steady_clock> start_time, long float time_before_failure_in_seconds)
+void PasswordDecrypter::single_restricted_combination_decrypter(std::chrono::time_point<std::chrono::steady_clock> start_time, long float time_before_failure_in_seconds)
 {
 	vector<int> pass;
-	single_combination_decrypter(start_time, time_before_failure_in_seconds, 0, 0, pass);
+	single_restricted_combination_decrypter(start_time, time_before_failure_in_seconds, 0, 0, pass);
 }
-void PasswordDecrypter::single_combination_decrypter(std::chrono::time_point<std::chrono::steady_clock> start_time, long float time_before_failure_in_seconds, int end_of_prev_visited_character, int offset, vector<int> password)
+void PasswordDecrypter::single_restricted_combination_decrypter(std::chrono::time_point<std::chrono::steady_clock> start_time, long float time_before_failure_in_seconds, int end_of_prev_visited_character, int offset, vector<int> password)
 {
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<microseconds>(stop - start_time).count();
@@ -147,7 +138,7 @@ void PasswordDecrypter::single_combination_decrypter(std::chrono::time_point<std
 		if (PasswordEncrypter::collatz_algorithm(32 + offset) == substring)
 		{
 			password.push_back(32);
-			single_combination_decrypter(start_time, time_before_failure_in_seconds, end_of_next_char, substring, password);
+			single_restricted_combination_decrypter(start_time, time_before_failure_in_seconds, end_of_next_char, substring, password);
 			password.pop_back();
 		}
 		for (int j = 65; j < 91; j++)
@@ -155,7 +146,7 @@ void PasswordDecrypter::single_combination_decrypter(std::chrono::time_point<std
 			if (PasswordEncrypter::collatz_algorithm(j + offset) == substring)
 			{
 				password.push_back(j);
-				single_combination_decrypter(start_time, time_before_failure_in_seconds, end_of_next_char, substring, password);
+				single_restricted_combination_decrypter(start_time, time_before_failure_in_seconds, end_of_next_char, substring, password);
 				password.pop_back();
 			}
 
@@ -172,7 +163,7 @@ void PasswordDecrypter::single_combination_decrypter(std::chrono::time_point<std
 			if (PasswordEncrypter::collatz_algorithm(j + offset) == substring)
 			{
 				password.push_back(j);
-				single_combination_decrypter(start_time, time_before_failure_in_seconds, end_of_next_char, substring, password);
+				single_restricted_combination_decrypter(start_time, time_before_failure_in_seconds, end_of_next_char, substring, password);
 				password.pop_back();
 			}
 
@@ -212,7 +203,7 @@ void PasswordDecrypter::single_extended_combination_decrypter(std::chrono::time_
 		else 
 		{
 			substring = stoi(encrypted_password.substr(end_of_prev_visited_character, i));
-			if (substring == 0)
+			if (substring == 0 && end_of_prev_visited_character != 0)
 				return;
 		}
 
@@ -259,7 +250,7 @@ void PasswordDecrypter::all_combinations_decrypter(int end_of_prev_visited_chara
 		else 
 		{
 			substring = stoi(encrypted_password.substr(end_of_prev_visited_character, i));
-			if (substring == 0)
+			if (substring == 0 && end_of_prev_visited_character != 0)
 				return;
 		}
 
@@ -298,7 +289,7 @@ void PasswordDecrypter::sentence_decrypter(int end_of_prev_visited_character, in
 		else 
 		{
 			substring = stoi(encrypted_password.substr(end_of_prev_visited_character, i));
-			if (substring == 0)
+			if (substring == 0 && end_of_prev_visited_character != 0)
 				return;
 		}
 		if (PasswordEncrypter::collatz_algorithm(32 + offset) == substring)
@@ -359,7 +350,6 @@ void PasswordDecrypter::fast_sentence_decrypter(int end_of_prev_visited_characte
 			{
 				words->push_back(word);
 				word.clear();
-				//output_vector(password);
 			}
 			return;
 		}
@@ -376,7 +366,6 @@ void PasswordDecrypter::fast_sentence_decrypter(int end_of_prev_visited_characte
 			word.clear();
 			fast_sentence_decrypter(end_of_next_char, substring, password, words, word);
 			password.pop_back();
-			//output_vector(password);
 		}
 		for (int j = 65; j < 91; j++)
 		{

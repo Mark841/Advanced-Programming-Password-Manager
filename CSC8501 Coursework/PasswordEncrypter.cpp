@@ -21,7 +21,6 @@ string PasswordEncrypter::password_encrypter(const string password)
 	{
 		int ascii_value = int(c);
 		offset = PasswordEncrypter::collatz_algorithm(ascii_value + offset);
-		std::cout << c << "," << offset << endl;
 		encrypted_password += to_string(offset);
 	}
 	return encrypted_password;

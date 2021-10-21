@@ -68,6 +68,47 @@ void output_sentence(vector<vector<string>> words, int index, string sentence, i
 	}
 }
 
+void analyse_character_set(vector<string> passwords, long float time_before_failure_in_seconds, int start, int end, void (PasswordDecrypter::* funcPtr)(std::chrono::time_point<std::chrono::steady_clock>, long float))
+{
+	PasswordDecrypter* cracking_attempt[10000];
+	int count = 0;
+	float entire_passwords_cracked = 0;
+	float passwords_cracked = 0;
+	unsigned long average = 0;
+	int character_length = 1;
+
+	cout << "Character length | Average successful cracking time (microseconds) | Success rate " << endl;
+	for (int i = start; i < end; i++)
+	{
+		cracking_attempt[count] = new PasswordDecrypter(passwords[i]);
+		auto start = high_resolution_clock::now();
+		(cracking_attempt[count]->*funcPtr)(start, time_before_failure_in_seconds * 1000000);
+		auto stop = high_resolution_clock::now();
+
+		if (cracking_attempt[count]->get_all_combinations().size() != 0)
+		{
+			auto duration = duration_cast<microseconds>(stop - start).count();
+			average += duration;
+			entire_passwords_cracked++;
+			passwords_cracked++;
+		}
+
+		if ((i + 1) % 100 == 0 && i != 0)
+		{
+			cout << "\t" << character_length << "\t |\t" << (average / 100) << " microseconds\t   |\t" << passwords_cracked << "%" << endl;
+			average = 0;
+			passwords_cracked = 0;
+			character_length++;
+		}
+		count++;
+	}
+	cout << "Percentage success of passwords cracked: " << ((float)entire_passwords_cracked / ((float)passwords.size() - ((float)passwords.size() / 2))) * 100 << "% out of " << (passwords.size() / 2) << endl;
+	for (int i = 0; i < 10000; i++)
+	{
+		delete cracking_attempt[i];
+	}
+}
+
 int menu()
 {
 	int choice;
@@ -187,72 +228,17 @@ void choice_4()
 	{
 		AppendToFile* file = new AppendToFile(passwords_file);
 		vector<string> passwords = file->get_values();
-		
-		PasswordDecrypter* cracking_attempt[20000];
-		float entire_passwords_cracked = 0;
-		float passwords_cracked = 0;
-		unsigned long average = 0;
-		int character_length = 1;
 		long float time_before_failure_in_seconds = 0.25;
+		void (PasswordDecrypter::*funcPtr)(std::chrono::time_point<std::chrono::steady_clock>, long float);
+
 		cout << "\nCRACKING RESTRICTED ASCII CHARACTER SET\n\tNOTE: A password is given " << time_before_failure_in_seconds << "s to be cracked, if a solution isn't found it is counted as a failure\n" << endl;
-		cout << "Character length | Average successful cracking time (microseconds) | Success rate " << endl;
-		for (int i = 0; i < passwords.size()/2; i++)
-		{
-			cracking_attempt[i] = new PasswordDecrypter(passwords[i]);
-			auto start = high_resolution_clock::now();
-			cracking_attempt[i]->single_combination_decrypter(start, time_before_failure_in_seconds*1000000);
-			auto stop = high_resolution_clock::now();
+		funcPtr = &PasswordDecrypter::single_restricted_combination_decrypter; 
+		analyse_character_set(passwords, time_before_failure_in_seconds, 0, passwords.size() / 2, funcPtr);
 
-			if (cracking_attempt[i]->get_all_combinations().size() != 0)
-			{ 
-				auto duration = duration_cast<microseconds>(stop - start).count();
-				average += duration;
-				entire_passwords_cracked++;
-				passwords_cracked++;
-			}
-			
-			if ((i + 1) % 100 == 0 && i != 0)
-			{
-				cout << "\t" << character_length << "\t |\t" << (average / 100) << " microseconds\t   |\t" << passwords_cracked << "%" << endl;
-				average = 0;
-				passwords_cracked = 0;
-				character_length++;
-			}
-		}
-		cout << "Percentage success of passwords cracked: " << ((float) entire_passwords_cracked / ((float) passwords.size() - ((float) passwords.size() / 2))) * 100 << "% out of " << (passwords.size() / 2) << endl;
-
-		entire_passwords_cracked = 0;
-		character_length = 1;
 		cout << "\nCRACKING NON RESTRICTED EXTENDED ASCII CHARACTER SET\n\tNOTE: A password is given " << time_before_failure_in_seconds << "s to be cracked, if a solution isn't found it is counted as a failure\n" << endl;
-		cout << "Character length | Average successful cracking time (microseconds) | Success rate " << endl;
-		for (int i = passwords.size() / 2; i < passwords.size(); i++)
-		{
-			cracking_attempt[i] = new PasswordDecrypter(passwords[i]);
-			auto start = high_resolution_clock::now();
-			cracking_attempt[i]->single_extended_combination_decrypter(start, time_before_failure_in_seconds * 1000000);
-			auto stop = high_resolution_clock::now();
-
-			if (cracking_attempt[i]->get_all_combinations().size() != 0)
-			{
-				auto duration = duration_cast<microseconds>(stop - start).count();
-				average += duration;
-				entire_passwords_cracked++;
-				passwords_cracked++;
-			}
-
-			if ((i + 1) % 100 == 0 && i != 0)
-			{
-				cout << "\t" << character_length << "\t |\t" << (average / 100) << " microseconds\t   |\t" << passwords_cracked << "%" << endl;
-				average = 0;
-				passwords_cracked = 0;
-				character_length++;
-			}
-		}
-		cout << "Percentage success of passwords cracked: " << ((float) entire_passwords_cracked / ((float) passwords.size() - ((float) passwords.size() / 2))) * 100 << "% out of " << (passwords.size() - (passwords.size() / 2)) << endl;
-		for (int i = 0; i < passwords.size(); i++)
-		{
-			delete cracking_attempt[i];
-		}
+		funcPtr = &PasswordDecrypter::single_extended_combination_decrypter;
+		analyse_character_set(passwords, time_before_failure_in_seconds, passwords.size() / 2, passwords.size(), funcPtr);
+		
 		delete file;
 		file = NULL;
 	}
@@ -270,7 +256,7 @@ void choice_5()
 
 		cout << "Decrypting: 27322810313331033910211452912207344136146925461033281533271031012815108114101" << endl;
 		PasswordDecrypter* decrypted = new PasswordDecrypter("27322810313331033910211452912207344136146925461033281533271031012815108114101");
-		decrypted->single_combination_decrypter();
+		decrypted->single_restricted_combination_decrypter();
 		decrypted->fast_sentence_decrypter();
 
 		cout << "Getting valid English words from decrypted words" << endl;
@@ -312,7 +298,7 @@ void choice_5()
 		int possibilities = 0;
 		int* variations = &possibilities;
 		output_sentence(words_in_right_slots, 0, "", variations);
-		cout << "\nThere were " << *variations << "possible different variations of sentences from fount valid English words" << endl;
+		cout << "\nThere were " << *variations << " possible different variations of sentences from fount valid English words" << endl;
 
 		delete decrypted;
 		delete file;
