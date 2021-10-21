@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <chrono>
+#include <functional>
 #include "FileManager.h"
 #include "WriteToFile.h"
 #include "AppendToFile.h"
@@ -18,12 +19,11 @@ const string username_and_passwords_file = "password.txt";
 const string passwords_file = "passwordtest.txt";
 const string english_words = "ukenglishwords.txt";
 
-void validate_username_and_password(string* username, string* password)
+inline void validate_username_and_password(string* username, string* password, BinarySearchTreeUsers* bst)
 {
-	// TODO: Check username against bst to see if already exists
-	while (*username == "" || username == nullptr)
+	while (*username == "" || username == nullptr || bst->search_for_user(*username))
 	{
-		cout << "Please enter a username: " << endl;
+		cout << "Please enter a valid unique username: " << endl;
 		cin >> *username;
 	}
 	while (*password == "" || password == nullptr)
@@ -32,24 +32,45 @@ void validate_username_and_password(string* username, string* password)
 		cin >> *password;
 	}
 }
-bool binary_search_words(vector<string> dictionary_words, string word)
+
+inline vector<string> get_valid_english_words(vector<vector<int>> all_possible_words, vector<string> dictionary_words)
 {
-	int left = 0;
-	int right = dictionary_words.size();
-
-	while (left <= right)
+	vector<string> valid_words;
+	for (auto word : all_possible_words)
 	{
-		int mid = (left + right) / 2;
-		if (dictionary_words[mid] == word)
-			return true;
-		else if (word < dictionary_words[mid])
-			right = mid - 1;
-		else
-			left = mid + 1;
-	}
-	return false;
-}
+		string valid_word = "";
+		for (int i = 0; i < word.size(); i++)
+		{
+			valid_word += char(word[i]);
+		}
 
+		auto iterator = find(dictionary_words.begin(), dictionary_words.end(), valid_word);
+		if (iterator != dictionary_words.end())
+		{
+			valid_words.push_back(valid_word);
+		}
+		valid_word = "";
+	}
+	return valid_words;
+}
+inline vector<vector<string>> get_all_possible_sentences(vector<string> valid_words, vector<string> sentence)
+{
+	vector<vector<string>> words_in_right_slots;
+	for (auto word : sentence)
+	{
+		vector<string> word_slots;
+		for (auto valid_word : valid_words)
+		{
+			if (valid_word.length() == word.length())
+			{
+				word_slots.push_back(valid_word);
+			}
+		}
+		words_in_right_slots.push_back(word_slots);
+		word_slots.clear();
+	}
+	return words_in_right_slots;
+}
 void output_sentence(vector<vector<string>> words, int index, string sentence, int* variations)
 {
 	if (index == words.size())
@@ -70,7 +91,7 @@ void output_sentence(vector<vector<string>> words, int index, string sentence, i
 
 void analyse_character_set(vector<string> passwords, long float time_before_failure_in_seconds, int start, int end, void (PasswordDecrypter::* funcPtr)(std::chrono::time_point<std::chrono::steady_clock>, long float))
 {
-	PasswordDecrypter* cracking_attempt[10000];
+	PasswordDecrypter** cracking_attempt = new PasswordDecrypter* [10000];
 	int count = 0;
 	float entire_passwords_cracked = 0;
 	float passwords_cracked = 0;
@@ -103,36 +124,22 @@ void analyse_character_set(vector<string> passwords, long float time_before_fail
 		count++;
 	}
 	cout << "Percentage success of passwords cracked: " << ((float)entire_passwords_cracked / ((float)passwords.size() - ((float)passwords.size() / 2))) * 100 << "% out of " << (passwords.size() / 2) << endl;
-	for (int i = 0; i < 10000; i++)
-	{
-		delete cracking_attempt[i];
-	}
+	delete [] cracking_attempt;
 }
 
-int menu()
-{
-	int choice;
-	cout << "Please enter an integer number which represents one of the choices below:" << endl;
-	cout << "\t1. Create a username and password" << endl;
-	cout << "\t2. Check username and password" << endl;
-	cout << "\t3. Generate password strength analysis file" << endl;
-	cout << "\t4. Analyse password strength analysis file" << endl;
-	cout << "\t5. Decrypt sentence" << endl;
-	cin >> choice;
-	return choice;
-}
-
-void choice_1()
+inline void choice_1()
 {
 	try
 	{
 		AppendToFile* file = new AppendToFile(username_and_passwords_file);
+		BinarySearchTreeUsers* bst = new BinarySearchTreeUsers();
+		file->store_users_in_tree(bst);
 		string* username = new string();
 		string* password = new string();
 		*username = "";
 		*password = "";
 
-		validate_username_and_password(username, password);
+		validate_username_and_password(username, password, bst);
 		*password = PasswordEncrypter::password_encrypter(*password);
 		file->add_to_file(*username, *password);
 
@@ -145,7 +152,7 @@ void choice_1()
 		exit(1);
 	}
 }
-void choice_2()
+inline void choice_2()
 {
 	try
 	{
@@ -192,7 +199,7 @@ void choice_2()
 		exit(1);
 	}
 }
-void choice_3()
+inline void choice_3()
 {
 	try
 	{
@@ -201,7 +208,7 @@ void choice_3()
 
 		string* restrictive_passwords = rpg->get_restrictive_passwords();
 		vector<vector<int>> non_restrictive_passwords = rpg->get_non_restrictive_passwords();
-
+		
 		for (int i = 0; i < 10000; i++)
 		{
 			file->add_to_file(PasswordEncrypter::password_encrypter(restrictive_passwords[i]));
@@ -210,10 +217,6 @@ void choice_3()
 		{
 			file->add_to_file(PasswordEncrypter::password_encrypter(non_restrictive_passwords[i]));
 		}
-		// TODO: 9999 not being saved to file but only on non restrictive passwords for some reason
-		cout << PasswordEncrypter::password_encrypter(non_restrictive_passwords[9998]) << endl;
-		cout << PasswordEncrypter::password_encrypter(non_restrictive_passwords[9999]) << endl;
-
 		delete rpg;
 		rpg = NULL;
 	}
@@ -222,7 +225,7 @@ void choice_3()
 		exit(1);
 	}
 }
-void choice_4()
+inline void choice_4()
 {
 	try
 	{
@@ -247,7 +250,7 @@ void choice_4()
 		exit(1);
 	}
 }
-void choice_5()
+inline void choice_5()
 {
 	try
 	{
@@ -261,40 +264,11 @@ void choice_5()
 
 		cout << "Getting valid English words from decrypted words" << endl;
 		vector<vector<int>> all_possible_words = decrypted->get_all_words();
-		vector<string> valid_words;
-		for (auto word : all_possible_words)
-		{
-			string valid_word = "";
-			for (int i = 0; i < word.size(); i++)
-			{
-				valid_word += char(word[i]);
-			}
-
-			auto iterator = find(dictionary_words.begin(), dictionary_words.end(), valid_word);
-			if (iterator != dictionary_words.end())
-			{
-				valid_words.push_back(valid_word);
-			}
-			valid_word = "";
-		}
+		vector<string> valid_words = get_valid_english_words(all_possible_words, dictionary_words);
 
 		cout << "Getting all possible sentence variations" << endl;
-		vector<string> sentence = decrypted->get_rough_sentence_words();
-		vector<vector<string>> words_in_right_slots;
-		for (auto word : sentence)
-		{
-			vector<string> word_slots;
-			for (auto valid_word : valid_words)
-			{
-				if (valid_word.length() == word.length())
-				{
-					word_slots.push_back(valid_word);
-				}
-			}
-			words_in_right_slots.push_back(word_slots);
-			word_slots.clear();
-		}
-
+		vector<vector<string>> words_in_right_slots = get_all_possible_sentences(valid_words, decrypted->get_rough_sentence_words());
+		
 		int possibilities = 0;
 		int* variations = &possibilities;
 		output_sentence(words_in_right_slots, 0, "", variations);
@@ -318,6 +292,19 @@ int main()
 	while (toupper(restart) == 'Y')
 	{
 		while (choice < 1 || choice > 5) {
+
+			std::function <int()> menu = []() {
+				int choice;
+				cout << "Please enter an integer number which represents one of the choices below:" << endl;
+				cout << "\t1. Create a username and password" << endl;
+				cout << "\t2. Check username and password" << endl;
+				cout << "\t3. Generate password strength analysis file" << endl;
+				cout << "\t4. Analyse password strength analysis file" << endl;
+				cout << "\t5. Decrypt sentence" << endl;
+				cin >> choice;
+				return choice;
+			};
+
 			choice = menu();
 		}
 

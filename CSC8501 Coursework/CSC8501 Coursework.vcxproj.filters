@@ -39,9 +39,6 @@
     <ClCompile Include="BinarySearchTreeUsers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BinarySearchTreeWords.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileManager.h">
@@ -63,9 +60,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BinarySearchTreeUsers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BinarySearchTreeWords.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

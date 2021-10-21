@@ -59,17 +59,3 @@ void AppendToFile::store_users_in_tree(BinarySearchTreeUsers* bst)
 		bst->insert_user(line.substr(0, line.find(' ')), line.substr(line.find(' ') + 1));
 	}
 }
-
-void AppendToFile::store_words_in_tree(BinarySearchTreeWords* bst)
-{
-	string line;
-	data_file.clear();
-	data_file.seekg(0, ios::beg);
-	int count = 0;
-	while (getline(data_file, line))
-	{
-		bst->insert_word(line);
-		cout << count << endl;
-		count++;
-	}
-}

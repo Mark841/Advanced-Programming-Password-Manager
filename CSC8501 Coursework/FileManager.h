@@ -3,7 +3,6 @@
 #include <fstream>
 #include <string>
 #include "BinarySearchTreeUsers.h"
-#include "BinarySearchTreeWords.h"
 
 using namespace std;
 

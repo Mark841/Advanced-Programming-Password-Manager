@@ -125,7 +125,6 @@
   <ItemGroup>
     <ClCompile Include="AppendToFile.cpp" />
     <ClCompile Include="BinarySearchTreeUsers.cpp" />
-    <ClCompile Include="BinarySearchTreeWords.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PasswordDecrypter.cpp" />
@@ -136,7 +135,6 @@
   <ItemGroup>
     <ClInclude Include="AppendToFile.h" />
     <ClInclude Include="BinarySearchTreeUsers.h" />
-    <ClInclude Include="BinarySearchTreeWords.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="PasswordDecrypter.h" />
     <ClInclude Include="PasswordEncrypter.h" />
