@@ -193,7 +193,7 @@ void choice_4()
 		float passwords_cracked = 0;
 		unsigned long average = 0;
 		int character_length = 1;
-		long float time_before_failure_in_seconds = 1;
+		long float time_before_failure_in_seconds = 0.25;
 		cout << "\nCRACKING RESTRICTED ASCII CHARACTER SET\n\tNOTE: A password is given " << time_before_failure_in_seconds << "s to be cracked, if a solution isn't found it is counted as a failure\n" << endl;
 		cout << "Character length | Average successful cracking time (microseconds) | Success rate " << endl;
 		for (int i = 0; i < passwords.size()/2; i++)
@@ -219,7 +219,7 @@ void choice_4()
 				character_length++;
 			}
 		}
-		cout << "Percentage success of passwords cracked: " << (float) (entire_passwords_cracked / (passwords.size() / 2)) * 100 << "% out of " << (passwords.size() / 2) << endl;
+		cout << "Percentage success of passwords cracked: " << ((float) entire_passwords_cracked / ((float) passwords.size() - ((float) passwords.size() / 2))) * 100 << "% out of " << (passwords.size() / 2) << endl;
 
 		entire_passwords_cracked = 0;
 		character_length = 1;
@@ -248,7 +248,7 @@ void choice_4()
 				character_length++;
 			}
 		}
-		cout << "Percentage success of passwords cracked: " << (float)(entire_passwords_cracked / (passwords.size() - (passwords.size() / 2))) * 100 << "% out of " << (passwords.size() - (passwords.size() / 2)) << endl;
+		cout << "Percentage success of passwords cracked: " << ((float) entire_passwords_cracked / ((float) passwords.size() - ((float) passwords.size() / 2))) * 100 << "% out of " << (passwords.size() - (passwords.size() / 2)) << endl;
 		for (int i = 0; i < passwords.size(); i++)
 		{
 			delete cracking_attempt[i];

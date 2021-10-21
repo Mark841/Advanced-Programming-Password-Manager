@@ -5,12 +5,20 @@ PasswordDecrypter::PasswordDecrypter(string password) : encrypted_password(passw
 {
 	words = new vector<vector<int>>;
 }
-
 PasswordDecrypter::~PasswordDecrypter()
 {
 	delete words;
 	words = NULL;
 }
+
+/* TODO:
+I have this line in all my decrypt methods:
+
+			if (substring == 0)
+				return;
+
+But the ASCII value 1 will give a value of 0 steps from the collatz algorithm so this is actually a vlaid character
+*/
 
 void PasswordDecrypter::single_combination_decrypter()
 {
