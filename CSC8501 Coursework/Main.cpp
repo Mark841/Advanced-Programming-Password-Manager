@@ -39,7 +39,7 @@ inline vector<string> get_valid_english_words(vector<vector<int>> all_possible_w
 	for (auto word : all_possible_words)
 	{
 		string valid_word = "";
-		for (int i = 0; i < word.size(); i++)
+		for (unsigned int i = 0; i < word.size(); i++)
 		{
 			valid_word += char(word[i]);
 		}
@@ -53,7 +53,7 @@ inline vector<string> get_valid_english_words(vector<vector<int>> all_possible_w
 	}
 	return valid_words;
 }
-inline vector<vector<string>> get_all_possible_sentences(vector<string> valid_words, vector<string> sentence)
+inline vector<vector<string>> put_words_in_correct_slots(vector<string> valid_words, vector<string> sentence)
 {
 	vector<vector<string>> words_in_right_slots;
 	for (auto word : sentence)
@@ -80,7 +80,7 @@ void output_sentence(vector<vector<string>> words, int index, string sentence, i
 	}
 	else
 	{
-		for (int i = 0; i < words[index].size(); i++)
+		for (unsigned int i = 0; i < words[index].size(); i++)
 		{
 			sentence += words[index][i] + " ";
 			output_sentence(words, index+1, sentence, variations);
@@ -89,13 +89,13 @@ void output_sentence(vector<vector<string>> words, int index, string sentence, i
 	}
 }
 
-void analyse_character_set(vector<string> passwords, long float time_before_failure_in_seconds, int start, int end, void (PasswordDecrypter::* funcPtr)(std::chrono::time_point<std::chrono::steady_clock>, long float))
+void analyse_character_set(vector<string> passwords, float time_before_failure_in_seconds, int start, int end, void (PasswordDecrypter::* funcPtr)(std::chrono::time_point<std::chrono::steady_clock>, float))
 {
 	PasswordDecrypter** cracking_attempt = new PasswordDecrypter* [10000];
 	int count = 0;
 	float entire_passwords_cracked = 0;
 	float passwords_cracked = 0;
-	unsigned long average = 0;
+	unsigned int average = 0;
 	int character_length = 1;
 
 	cout << "Character length | Average successful cracking time (microseconds) | Success rate " << endl;
@@ -109,7 +109,7 @@ void analyse_character_set(vector<string> passwords, long float time_before_fail
 		if (cracking_attempt[count]->get_all_combinations().size() != 0)
 		{
 			auto duration = duration_cast<microseconds>(stop - start).count();
-			average += duration;
+			average += (unsigned int) duration;
 			entire_passwords_cracked++;
 			passwords_cracked++;
 		}
@@ -231,8 +231,8 @@ inline void choice_4()
 	{
 		AppendToFile* file = new AppendToFile(passwords_file);
 		vector<string> passwords = file->get_values();
-		long float time_before_failure_in_seconds = 0.25;
-		void (PasswordDecrypter::*funcPtr)(std::chrono::time_point<std::chrono::steady_clock>, long float);
+		float time_before_failure_in_seconds = 0.25;
+		void (PasswordDecrypter::*funcPtr)(std::chrono::time_point<std::chrono::steady_clock>, float);
 
 		cout << "\nCRACKING RESTRICTED ASCII CHARACTER SET\n\tNOTE: A password is given " << time_before_failure_in_seconds << "s to be cracked, if a solution isn't found it is counted as a failure\n" << endl;
 		funcPtr = &PasswordDecrypter::single_restricted_combination_decrypter; 
@@ -260,14 +260,14 @@ inline void choice_5()
 		cout << "Decrypting: 27322810313331033910211452912207344136146925461033281533271031012815108114101" << endl;
 		PasswordDecrypter* decrypted = new PasswordDecrypter("27322810313331033910211452912207344136146925461033281533271031012815108114101");
 		decrypted->single_restricted_combination_decrypter();
-		decrypted->fast_sentence_decrypter();
+		decrypted->sentence_decrypter();
 
 		cout << "Getting valid English words from decrypted words" << endl;
 		vector<vector<int>> all_possible_words = decrypted->get_all_words();
 		vector<string> valid_words = get_valid_english_words(all_possible_words, dictionary_words);
 
 		cout << "Getting all possible sentence variations" << endl;
-		vector<vector<string>> words_in_right_slots = get_all_possible_sentences(valid_words, decrypted->get_rough_sentence_words());
+		vector<vector<string>> words_in_right_slots = put_words_in_correct_slots(valid_words, decrypted->get_possible_sentence_words());
 		
 		int possibilities = 0;
 		int* variations = &possibilities;

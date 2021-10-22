@@ -19,5 +19,4 @@ private:
 
 	string* restrictive_passwords;
 	vector<vector<int>> non_restrictive_passwords;
-
 };

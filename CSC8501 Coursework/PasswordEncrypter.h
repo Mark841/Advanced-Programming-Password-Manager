@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+
 using namespace std;
 
 class PasswordEncrypter
@@ -10,4 +11,3 @@ public:
 	static string password_encrypter(const string password);
 	static string password_encrypter(vector<int> password);
 };
-

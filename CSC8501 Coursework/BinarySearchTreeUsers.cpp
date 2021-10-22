@@ -32,7 +32,6 @@ string BinarySearchTreeUsers::get_user_password(const string username)
 	return get_user_password_recursive(&root, username);
 }
 
-
 void BinarySearchTreeUsers::insert_user_recursive(struct user_node** tree, const string username, const string password)
 {
 	if (!tree) return;

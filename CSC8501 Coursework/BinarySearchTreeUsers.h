@@ -24,7 +24,7 @@ public:
 private:
 	struct user_node* root;
 
-	void insert_user_recursive(struct user_node** tree, const string username2, const string password);
+	void insert_user_recursive(struct user_node** tree, const string username, const string password);
 	void print_tree_recursive(struct user_node* tree);
 	void terminate_tree_recursive(struct user_node* tree);
 	bool search_for_user_recursive(struct user_node** tree, const string username);

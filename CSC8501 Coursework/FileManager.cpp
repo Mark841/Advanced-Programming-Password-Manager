@@ -14,7 +14,6 @@ FileManager::FileManager(const string file_name, int opening_mode)
 	if (data_file.fail())
 		throw invalid_argument("no file exists " + file_name);
 }
-
 FileManager::~FileManager()
 {
 	data_file.close();

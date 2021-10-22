@@ -3,7 +3,6 @@
 AppendToFile::AppendToFile(const string file_name) : FileManager(file_name, 1)
 {
 }
-
 AppendToFile::~AppendToFile()
 {
 }

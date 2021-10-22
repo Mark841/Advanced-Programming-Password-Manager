@@ -7,7 +7,6 @@ RandomPasswordGenerator::RandomPasswordGenerator()
 	repeated_characters_restricted();
 	non_repeating_non_restrictive();
 }
-
 RandomPasswordGenerator::~RandomPasswordGenerator()
 {
 	delete [] restrictive_passwords;
@@ -29,7 +28,6 @@ void RandomPasswordGenerator::repeated_characters_restricted()
 		password = "";
 	}
 }
-
 void RandomPasswordGenerator::non_repeating_non_restrictive()
 {
 	int character_length = 0;
@@ -41,11 +39,11 @@ void RandomPasswordGenerator::non_repeating_non_restrictive()
 			character_length++;
 		for (int j = 0; j < character_length; ++j)
 		{
-			character = rand() % 254 + 1;
+			character = rand() % 255 + 1;
 			auto iterator = find(password.begin(), password.end(), character);
 			while ((password.size() != 0) && (iterator != password.end()))
 			{
-				character = rand() % 256;
+				character = rand() % 255 + 1;
 				iterator = find(password.begin(), password.end(), character);
 			}
 			password.push_back(character);

@@ -3,7 +3,6 @@
 WriteToFile::WriteToFile(const string file_name) : FileManager(file_name, 2)
 {
 }
-
 WriteToFile::~WriteToFile()
 {
 }
