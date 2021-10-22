@@ -41,4 +41,3 @@ private:
 	vector<vector<int>> possible_combinations;
 	vector<vector<int>>* words;
 };
-

@@ -40,15 +40,11 @@ inline vector<string> get_valid_english_words(vector<vector<int>> all_possible_w
 	{
 		string valid_word = "";
 		for (unsigned int i = 0; i < word.size(); i++)
-		{
 			valid_word += char(word[i]);
-		}
 
 		auto iterator = find(dictionary_words.begin(), dictionary_words.end(), valid_word);
 		if (iterator != dictionary_words.end())
-		{
 			valid_words.push_back(valid_word);
-		}
 		valid_word = "";
 	}
 	return valid_words;
@@ -60,12 +56,8 @@ inline vector<vector<string>> put_words_in_correct_slots(vector<string> valid_wo
 	{
 		vector<string> word_slots;
 		for (auto valid_word : valid_words)
-		{
 			if (valid_word.length() == word.length())
-			{
 				word_slots.push_back(valid_word);
-			}
-		}
 		words_in_right_slots.push_back(word_slots);
 		word_slots.clear();
 	}
@@ -75,7 +67,7 @@ void output_sentence(vector<vector<string>> words, int index, string sentence, i
 {
 	if (index == words.size())
 	{
-		*variations = *variations + 1;
+		(*variations)++;
 		cout << sentence << endl;
 	}
 	else
@@ -182,14 +174,10 @@ inline void choice_2()
 				password_attempts--;
 			}
 			if (password_attempts == 0 && !password_correct)
-			{
 				cout << "failure!" << endl;
-			}
 		}
 		else
-		{
 			cout << "failure!" << endl;
-		}
 
 		delete file, bst;
 		bst, file = NULL;
@@ -210,13 +198,9 @@ inline void choice_3()
 		vector<vector<int>> non_restrictive_passwords = rpg->get_non_restrictive_passwords();
 		
 		for (int i = 0; i < 10000; i++)
-		{
 			file->add_to_file(PasswordEncrypter::password_encrypter(restrictive_passwords[i]));
-		}
 		for (int i = 0; i < 10000; i++)
-		{
 			file->add_to_file(PasswordEncrypter::password_encrypter(non_restrictive_passwords[i]));
-		}
 		delete rpg;
 		rpg = NULL;
 	}
@@ -286,15 +270,15 @@ inline void choice_5()
 
 int main()
 {
-	int choice = 0;
+	string choice = "0";
 	char restart = 'Y';
 
 	while (toupper(restart) == 'Y')
 	{
-		while (choice < 1 || choice > 5) {
+		while (choice < "1" || choice > "5") {
 
-			std::function <int()> menu = []() {
-				int choice;
+			std::function <string()> menu = []() {
+				string choice;
 				cout << "Please enter an integer number which represents one of the choices below:" << endl;
 				cout << "\t1. Create a username and password" << endl;
 				cout << "\t2. Check username and password" << endl;
@@ -308,31 +292,21 @@ int main()
 			choice = menu();
 		}
 
-		if (choice == 1)
-		{
+		if (choice == "1")
 			choice_1();
-		}
-		else if (choice == 2)
-		{
+		else if (choice == "2")
 			choice_2();
-		}
-		else if (choice == 3)
-		{
+		else if (choice == "3")
 			choice_3();
-		}
-		else if (choice == 4)
-		{
+		else if (choice == "4")
 			choice_4();
-		}
-		else if (choice == 5)
-		{
+		else if (choice == "5")
 			choice_5();
-		}
+
 		cout << "Would you like to choose a new option (y/n): ";
 		cin >> restart;
 		cout << endl;
-		choice = 0;
+		choice = "0";
 	}
-
 	return 0;
 }

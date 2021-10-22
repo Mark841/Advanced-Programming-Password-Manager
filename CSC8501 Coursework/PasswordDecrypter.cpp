@@ -242,9 +242,7 @@ void PasswordDecrypter::all_combinations_decrypter(int end_of_prev_visited_chara
 		if (end_of_next_char > encrypted_password.length())
 		{
 			if (PasswordEncrypter::password_encrypter(password) == encrypted_password)
-			{
 				possible_combinations.push_back(password);
-			}
 			return;
 		}
 		else 
@@ -355,8 +353,6 @@ vector<string> PasswordDecrypter::get_possible_sentence_words()
 		}
 	}
 	words.push_back(word);
-	word = "";
-
 	return words;
 }
 void PasswordDecrypter::output_possible_combinations()
