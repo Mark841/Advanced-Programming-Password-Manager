@@ -21,9 +21,7 @@ void RandomPasswordGenerator::repeated_characters_restricted()
 		if (i % 100 == 0)
 			character_length++;
 		for (int j = 0; j < character_length; ++j)
-		{
 			password += char('a' + rand() % 26);
-		}
 		restrictive_passwords[i] = password;
 		password = "";
 	}

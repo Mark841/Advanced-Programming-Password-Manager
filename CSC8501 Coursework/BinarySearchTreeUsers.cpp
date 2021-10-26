@@ -44,13 +44,9 @@ void BinarySearchTreeUsers::insert_user_recursive(struct user_node** tree, const
 		(*tree)->right = nullptr;
 	}
 	if ((*tree)->username.compare(username) > 0)
-	{
 		insert_user_recursive(&(*tree)->left, username, password);
-	}
 	else if ((*tree)->username.compare(username) < 0)
-	{
 		insert_user_recursive(&(*tree)->right, username, password);
-	}
 }
 void BinarySearchTreeUsers::print_tree_recursive(struct user_node* tree)
 {
@@ -75,42 +71,26 @@ bool BinarySearchTreeUsers::search_for_user_recursive(struct user_node** tree, c
 	if (*tree != NULL)
 	{
 		if ((*tree)->username == username)
-		{
 			return true;
-		}
 		else if ((*tree)->username > username)
-		{
 			return search_for_user_recursive(&(*tree)->left, username);
-		}
 		else if ((*tree)->username < username)
-		{
 			return search_for_user_recursive(&(*tree)->right, username);
-		}
 	}
 	else
-	{
 		return false;
-	}
 }
 string BinarySearchTreeUsers::get_user_password_recursive(user_node** tree, const string username)
 {
 	if (*tree != NULL)
 	{
 		if ((*tree)->username == username)
-		{
 			return (*tree)->password;
-		}
 		else if ((*tree)->username > username)
-		{
 			return get_user_password_recursive(&(*tree)->left, username);
-		}
 		else if ((*tree)->username < username)
-		{
 			return get_user_password_recursive(&(*tree)->right, username);
-		}
 	}
 	else
-	{
 		return "";
-	}
 }

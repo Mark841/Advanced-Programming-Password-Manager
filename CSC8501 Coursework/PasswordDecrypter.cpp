@@ -348,9 +348,7 @@ vector<string> PasswordDecrypter::get_possible_sentence_words()
 			word = "";
 		}
 		else
-		{
 			word += char(possible_combinations[0][i]);
-		}
 	}
 	words.push_back(word);
 	return words;
@@ -360,17 +358,13 @@ void PasswordDecrypter::output_possible_combinations()
 	for (unsigned int i = 0; i < possible_combinations.size(); i++)
 	{
 		for (unsigned int j = 0; j < possible_combinations[i].size(); j++)
-		{
 			cout << char(possible_combinations[i][j]);
-		}
 		cout << endl;
 	}
 }
 void PasswordDecrypter::output_vector(vector<int> password)
 {
 	for (unsigned int i = 0; i < password.size(); i++)
-	{
 		cout << char(password[i]);
-	}
 	cout << endl;
 }

@@ -15,9 +15,9 @@
 using namespace std;
 using namespace std::chrono;
 
-const string username_and_passwords_file = "password.txt";
-const string passwords_file = "passwordtest.txt";
-const string english_words = "ukenglishwords.txt";
+const string USERNAME_AND_PASSWORDS_FILE = "password.txt";
+const string PASSWORDS_FILE = "passwordtest.txt";
+const string ENGLISH_WORDS = "ukenglishwords.txt";
 
 inline void validate_username_and_password(string* username, string* password, BinarySearchTreeUsers* bst)
 {
@@ -88,6 +88,7 @@ void analyse_character_set(vector<string> passwords, float time_before_failure_i
 	float entire_passwords_cracked = 0;
 	float passwords_cracked = 0;
 	unsigned int average = 0;
+	unsigned int overall_average = 0;
 	int character_length = 1;
 
 	cout << "Character length | Average successful cracking time (microseconds) | Success rate " << endl;
@@ -102,6 +103,7 @@ void analyse_character_set(vector<string> passwords, float time_before_failure_i
 		{
 			auto duration = duration_cast<microseconds>(stop - start).count();
 			average += (unsigned int) duration;
+			overall_average += (unsigned int) duration;
 			entire_passwords_cracked++;
 			passwords_cracked++;
 		}
@@ -115,7 +117,7 @@ void analyse_character_set(vector<string> passwords, float time_before_failure_i
 		}
 		count++;
 	}
-	cout << "Percentage success of passwords cracked: " << ((float)entire_passwords_cracked / ((float)passwords.size() - ((float)passwords.size() / 2))) * 100 << "% out of " << (passwords.size() / 2) << endl;
+	cout << "\nTotal time taken for all successful passwords: " << overall_average << " microseconds\nAverage time taken for all successful passwords: " << overall_average/(end-start) << " microseconds\nPercentage success of passwords cracked: " << ((float)entire_passwords_cracked / ((float)passwords.size() - ((float)passwords.size() / 2))) * 100 << "% out of " << (passwords.size() / 2) << endl;
 	delete [] cracking_attempt;
 }
 
@@ -123,7 +125,7 @@ inline void choice_1()
 {
 	try
 	{
-		AppendToFile* file = new AppendToFile(username_and_passwords_file);
+		AppendToFile* file = new AppendToFile(USERNAME_AND_PASSWORDS_FILE);
 		BinarySearchTreeUsers* bst = new BinarySearchTreeUsers();
 		file->store_users_in_tree(bst);
 		string* username = new string();
@@ -148,7 +150,7 @@ inline void choice_2()
 {
 	try
 	{
-		AppendToFile* file = new AppendToFile(username_and_passwords_file);
+		AppendToFile* file = new AppendToFile(USERNAME_AND_PASSWORDS_FILE);
 		BinarySearchTreeUsers* bst = new BinarySearchTreeUsers();
 		file->store_users_in_tree(bst);
 
@@ -191,7 +193,7 @@ inline void choice_3()
 {
 	try
 	{
-		WriteToFile* file = new WriteToFile(passwords_file);
+		WriteToFile* file = new WriteToFile(PASSWORDS_FILE);
 		RandomPasswordGenerator* rpg = new RandomPasswordGenerator();
 
 		string* restrictive_passwords = rpg->get_restrictive_passwords();
@@ -213,7 +215,7 @@ inline void choice_4()
 {
 	try
 	{
-		AppendToFile* file = new AppendToFile(passwords_file);
+		AppendToFile* file = new AppendToFile(PASSWORDS_FILE);
 		vector<string> passwords = file->get_values();
 		float time_before_failure_in_seconds = 0.25;
 		void (PasswordDecrypter::*funcPtr)(std::chrono::time_point<std::chrono::steady_clock>, float);
@@ -238,7 +240,7 @@ inline void choice_5()
 {
 	try
 	{
-		AppendToFile* file = new AppendToFile(english_words);
+		AppendToFile* file = new AppendToFile(ENGLISH_WORDS);
 		vector<string> dictionary_words = file->get_values();
 
 		cout << "Decrypting: 27322810313331033910211452912207344136146925461033281533271031012815108114101" << endl;

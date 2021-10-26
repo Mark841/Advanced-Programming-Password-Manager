@@ -14,9 +14,7 @@ void AppendToFile::read_from_file()
 	data_file.seekg(0, ios::beg);
 
 	while (getline(data_file, next_line))
-	{
 		cout << next_line << endl;
-	}
 }
 vector<string> AppendToFile::get_values()
 {
@@ -28,9 +26,7 @@ vector<string> AppendToFile::get_values()
 
 	int count = 0;
 	while (getline(data_file, next_line))
-	{
 		values.push_back(next_line);
-	}
 	return values;
 }
 
@@ -54,7 +50,5 @@ void AppendToFile::store_users_in_tree(BinarySearchTreeUsers* bst)
 	data_file.seekg(0, ios::beg);
 
 	while (getline(data_file, line))
-	{
 		bst->insert_user(line.substr(0, line.find(' ')), line.substr(line.find(' ') + 1));
-	}
 }
